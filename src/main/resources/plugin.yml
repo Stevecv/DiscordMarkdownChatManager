@@ -1,0 +1,4 @@
+name: ChatManager
+version: '${project.version}'
+main: org.stevecv.chatmanager.ChatManager
+api-version: '1.20'
