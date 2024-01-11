@@ -1,5 +1,7 @@
 package org.stevecv.chatmanager;
 
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,10 +12,9 @@ public class OnChat implements Listener {
     public void onChat(PlayerChatEvent e) {
         Player p = e.getPlayer();
 
-        if (p.hasPermission("essentials.colour")) {
-            e.setFormat(Formatter.getPrefix(p) + p.getDisplayName() + "§8 » §f" + Formatter.format(e.getMessage()));
-        } else {
-            e.setFormat(Formatter.getPrefix(p) + p.getDisplayName() + "§8 » §f" + Formatter.format(e.getMessage()));
-        }
+        TextComponent nameInfo = new TextComponent(Formatter.getPrefix(p) + p.getDisplayName() + "§8 » §f");
+        nameInfo.addExtra(Formatter.format(e.getMessage()));
+
+        Bukkit.broadcast(nameInfo);
     }
 }
