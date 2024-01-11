@@ -1,5 +1,6 @@
 package org.stevecv.chatmanager;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -27,10 +28,10 @@ public class Formatter {
         return text;
     }
 
-    public static TextComponent format(String text) {
+    public static TextComponent formatNoSpoiler(String text) {
         text = color(text);
 
-        for (FormatElement formatElement: formattingElements) {
+        for (FormatElement formatElement : formattingElements) {
             final Pattern pattern = Pattern.compile(formatElement.regex, Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(text);
 
@@ -39,34 +40,45 @@ public class Formatter {
             }
         }
 
+        TextComponent retText = new TextComponent(text);
+        return retText;
+    }
 
+    public static TextComponent format(String text) {
+        text = color(text);
         TextComponent retText = new TextComponent();
 
         // Spoilers
-        String[] splitText = text.split("\\|\\|(.*?)\\|\\|");
+        text = text + " ";
+        String[] splitText = text.split("\\|\\|");
         boolean spoiler = false;
+        int count = 0;
         for (String textPiece: splitText) {
             String showText = textPiece;
-            if (spoiler) {
-                showText = showText.replaceAll("(.)", "|");
+            boolean spoil = spoiler && !(count % 2 == 0) && (count + 1 != splitText.length); //  && splitText.length != 1)
+            if (spoil) {
+                String clearedText = color(textPiece).replaceAll("§(.)", "");
+                showText = clearedText.replaceAll("(.)", ChatColor.DARK_GRAY + "▋");
+                showText += ChatColor.RESET;
+            } else if (spoiler) {
+                showText = "||" + showText;
             }
 
-            TextComponent addComponent = new TextComponent(showText);
-            if (spoiler) {
-                addComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(textPiece)));
+            TextComponent addComponent = formatNoSpoiler(showText);
+            if (spoil) {
+                addComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + "Spoilered text: " + ChatColor.RESET + color(textPiece))));
             }
 
             retText.addExtra(addComponent);
             spoiler = !spoiler;
+            count++;
         }
 
         return retText;
     }
 
-    private static @Nullable RegisteredServiceProvider<Chat> chatInst = Bukkit.getServicesManager().getRegistration(Chat.class);
-    private static Chat chat = chatInst.getProvider();
-
     public static String getPrefix(Player p) {
-        return color(chat.getPlayerPrefix(p));
+        if (ChatManager.chat == null) return "";
+        return color(ChatManager.chat.getPlayerPrefix(p));
     }
 }

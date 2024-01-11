@@ -1,11 +1,15 @@
 package org.stevecv.chatmanager;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.text.Format;
 
 public class OnChat implements Listener {
     @EventHandler
@@ -15,6 +19,13 @@ public class OnChat implements Listener {
         TextComponent nameInfo = new TextComponent(Formatter.getPrefix(p) + p.getDisplayName() + "§8 » §f");
         nameInfo.addExtra(Formatter.format(e.getMessage()));
 
-        Bukkit.broadcast(nameInfo);
+        TextComponent consoleSend = new TextComponent(Formatter.getPrefix(p) + p.getDisplayName() + "§8 » §f");
+        consoleSend.addExtra(Formatter.formatNoSpoiler(e.getMessage()));
+        Bukkit.getConsoleSender().sendMessage(consoleSend);
+
+        for (Player s: Bukkit.getOnlinePlayers()) {
+            s.sendMessage(nameInfo);
+        }
+        e.setCancelled(true);
     }
 }
