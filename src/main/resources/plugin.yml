@@ -3,3 +3,8 @@ version: '${project.version}'
 main: org.stevecv.chatmanager.ChatManager
 api-version: '1.20'
 depend: [Vault]
+commands:
+  nickname:
+    description: Sets your nickname
+    usage: /<command>
+    permission: chatmanager.nickname
