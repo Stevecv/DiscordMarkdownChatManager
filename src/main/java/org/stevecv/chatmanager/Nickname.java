@@ -1,4 +1,5 @@
 package org.stevecv.chatmanager;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -18,7 +19,9 @@ public class Nickname implements CommandExecutor {
             if (strings.length == 1 && commandSender instanceof Player) {
                 try {
                     setNickname((Player) commandSender, strings[0]);
-                    commandSender.sendMessage(ChatColor.GREEN + "Successfully set nickname to " + Formatter.format(strings[0]));
+                    TextComponent msg = new TextComponent(ChatColor.GREEN + "Successfully set nickname to ");
+                    msg.addExtra(Formatter.format(strings[0]));
+                    commandSender.sendMessage(msg);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -28,7 +31,9 @@ public class Nickname implements CommandExecutor {
                     if (offlinePlayer.isOnline()) {
                         try {
                             setNickname((Player) offlinePlayer, strings[1]);
-                            commandSender.sendMessage(ChatColor.GREEN + "Successfully set " + offlinePlayer.getName() + "'s nickname to " + Formatter.format(strings[1]));
+                            TextComponent msg = new TextComponent(ChatColor.GREEN + "Successfully set " + offlinePlayer.getName() + "'s nickname to ");
+                            msg.addExtra(Formatter.format(strings[1]));
+                            commandSender.sendMessage(msg);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -61,13 +66,13 @@ public class Nickname implements CommandExecutor {
         container.set(key, PersistentDataType.STRING, name);
     }
 
-    public static String getNickname(Player p) {
+    public static TextComponent getNickname(Player p) {
         NamespacedKey key = new NamespacedKey(ChatManager.getInstance(), "chatmanager-nickname");
         PersistentDataContainer container = p.getPersistentDataContainer();
         if(container.has(key, PersistentDataType.STRING)) {
-            return container.get(key, PersistentDataType.STRING);
+            return Formatter.format(container.get(key, PersistentDataType.STRING));
         } else {
-            return p.getName();
+            return Formatter.format(p.getName());
         }
     }
 }

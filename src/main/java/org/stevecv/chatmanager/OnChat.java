@@ -16,10 +16,14 @@ public class OnChat implements Listener {
     public void onChat(PlayerChatEvent e) {
         Player p = e.getPlayer();
 
-        TextComponent nameInfo = new TextComponent(Formatter.getPrefix(p) + Nickname.getNickname(p) + "§8 » §f");
+        TextComponent nameInfo = new TextComponent(Formatter.getPrefix(p));
+        nameInfo.addExtra(Nickname.getNickname(p));
+        nameInfo.addExtra("§8 » §f");
         nameInfo.addExtra(Formatter.format(e.getMessage()));
 
-        TextComponent consoleSend = new TextComponent(Formatter.getPrefix(p) + Nickname.getNickname(p)  + "§8 » §f");
+        TextComponent consoleSend = new TextComponent(Formatter.getPrefix(p));
+        consoleSend.addExtra(Nickname.getNickname(p));
+        consoleSend.addExtra("§8 » §f");
         consoleSend.addExtra(Formatter.formatNoSpoiler(e.getMessage()));
         Bukkit.getConsoleSender().sendMessage(consoleSend);
 
