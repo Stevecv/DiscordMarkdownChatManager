@@ -8,12 +8,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class ChatManager extends JavaPlugin {
     public static Chat chat = null;
 
+    public static ChatManager plugin = null;
+    public ChatManager() {
+        if(plugin != null) throw new RuntimeException("An instance of Main already exists!");
+        plugin = this;
+    }
+    public static ChatManager getInstance() { return plugin; }
+
     private boolean setupChat() {
         RegisteredServiceProvider<Chat> chatProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
         if (chatProvider != null) {
             chat = chatProvider.getProvider();
         }
-
         return (chat != null);
     }
 
@@ -32,6 +38,8 @@ public final class ChatManager extends JavaPlugin {
 
 
         getServer().getPluginManager().registerEvents(new OnChat(), this);
+
+        this.getCommand("nickname").setExecutor(new Nickname());
     }
 
     @Override
