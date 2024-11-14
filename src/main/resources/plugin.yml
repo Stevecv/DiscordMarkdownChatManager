@@ -2,9 +2,10 @@ name: ChatManager
 version: '${project.version}'
 main: org.stevecv.chatmanager.ChatManager
 api-version: '1.20'
-depend: [Vault]
+depend: [Vault, PlaceholderAPI]
 commands:
-  nickname:
-    description: Sets your nickname
+  discordmarkdownchatmanager:
+    description: Allows you to access commands relating to the chat manager
     usage: /<command>
-    permission: chatmanager.nickname
+    aliases: [dmcm, discordmarkdowncm, dmchatmanager]
+    permission: discordmarkdownchatmanager.admin

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.stevecv.chatmanager.ChatManager.config;
+
 public class Formatter {
     static ArrayList<FormatElement> formattingElements = new ArrayList<>();
     public void registerFormatter(String character, String replace) {
@@ -21,9 +23,11 @@ public class Formatter {
     }
 
     public static String color(String text) {
-        char[] codes = "0123456789abcdekmnolr".toCharArray();
-        for (char code: codes) {
-            text = text.replaceAll("&" + code, "§" + code);
+        if (config.getBoolean("allowEssentialsColors")) {
+            char[] codes = "0123456789abcdekmnolr".toCharArray();
+            for (char code : codes) {
+                text = text.replaceAll("&" + code, "§" + code);
+            }
         }
         return text;
     }
@@ -45,6 +49,10 @@ public class Formatter {
     }
 
     public static TextComponent format(String text) {
+        if (!config.getBoolean("allowSpoilers")) {
+            return formatNoSpoiler(text);
+        }
+
         text = color(text);
         TextComponent retText = new TextComponent();
 
@@ -75,10 +83,5 @@ public class Formatter {
         }
 
         return retText;
-    }
-
-    public static String getPrefix(Player p) {
-        if (ChatManager.chat == null) return "";
-        return color(ChatManager.chat.getPlayerPrefix(p));
     }
 }

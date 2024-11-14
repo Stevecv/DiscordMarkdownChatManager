@@ -1,5 +1,6 @@
 package org.stevecv.chatmanager;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
@@ -11,25 +12,17 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.text.Format;
 
+import static org.stevecv.chatmanager.ChatManager.config;
+
 public class OnChat implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent e) {
-        Player p = e.getPlayer();
+        String messageString = PlaceholderAPI.setPlaceholders(e.getPlayer(), String.valueOf(config.get("chatFormat")));
+        messageString.replace("%chat_message%", Formatter.format(e.getMessage()).toPlainText());
+        e.setMessage(messageString);
 
-        TextComponent nameInfo = new TextComponent(Formatter.getPrefix(p));
-        nameInfo.addExtra(Nickname.getNickname(p));
-        nameInfo.addExtra("§8 » §f");
-        nameInfo.addExtra(Formatter.format(e.getMessage()));
-
-        TextComponent consoleSend = new TextComponent(Formatter.getPrefix(p));
-        consoleSend.addExtra(Nickname.getNickname(p));
-        consoleSend.addExtra("§8 » §f");
-        consoleSend.addExtra(Formatter.formatNoSpoiler(e.getMessage()));
-        Bukkit.getConsoleSender().sendMessage(consoleSend);
-
-        for (Player s: Bukkit.getOnlinePlayers()) {
-            s.sendMessage(nameInfo);
-        }
-        e.setCancelled(true);
+        String consoleMessageString = PlaceholderAPI.setPlaceholders(e.getPlayer(), String.valueOf(config.get("chatFormat")));
+        consoleMessageString.replace("%chat_message%", Formatter.formatNoSpoiler(e.getMessage()).toPlainText());
+        Bukkit.getConsoleSender().sendMessage(consoleMessageString);
     }
 }
