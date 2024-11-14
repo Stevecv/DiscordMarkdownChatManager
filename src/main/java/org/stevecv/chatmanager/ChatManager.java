@@ -101,6 +101,8 @@ public final class ChatManager extends JavaPlugin implements @NotNull Listener {
         if (!config.isSet("allowStrikeThrough")) config.set("allowStrikeThrough", true);
 
         reloadRegistries();
+
+        this.getCommand("discordmarkdownchatmanager").setExecutor(new ChatManagerCommand());
     }
 
     @Override
