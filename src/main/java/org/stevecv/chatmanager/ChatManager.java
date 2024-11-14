@@ -109,9 +109,4 @@ public final class ChatManager extends JavaPlugin implements @NotNull Listener {
     public @NotNull ComponentLogger getComponentLogger() {
         return super.getComponentLogger();
     }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
 }

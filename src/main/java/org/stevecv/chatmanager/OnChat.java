@@ -18,11 +18,11 @@ public class OnChat implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent e) {
         String messageString = PlaceholderAPI.setPlaceholders(e.getPlayer(), String.valueOf(config.get("chatFormat")));
-        messageString.replace("%chat_message%", Formatter.format(e.getMessage()).toPlainText());
+        messageString.replace("%chat_message%", Formatter.format(e.getPlayer(), e.getMessage()).toPlainText());
         e.setMessage(messageString);
 
         String consoleMessageString = PlaceholderAPI.setPlaceholders(e.getPlayer(), String.valueOf(config.get("chatFormat")));
-        consoleMessageString.replace("%chat_message%", Formatter.formatNoSpoiler(e.getMessage()).toPlainText());
+        consoleMessageString.replace("%chat_message%", Formatter.formatNoSpoiler(e.getPlayer(), e.getMessage()).toPlainText());
         Bukkit.getConsoleSender().sendMessage(consoleMessageString);
     }
 }

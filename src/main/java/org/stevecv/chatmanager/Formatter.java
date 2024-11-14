@@ -22,9 +22,30 @@ public class Formatter {
         formattingElements.add(new FormatElement(character, replace));
     }
 
-    public static String color(String text) {
+    public static String color(Player player, String text) {
+        String codesString = "";
+
+        if (player.hasPermission("dmcm.colors")) {
+            codesString += "0123456789abcdef";
+        }
+        if (player.hasPermission("dmcm.magic")) {
+            codesString += "k";
+        }
+        if (player.hasPermission("dmcm.strikethrough")) {
+            codesString += "m";
+        }
+        if (player.hasPermission("dmcm.underline")) {
+            codesString += "n";
+        }
+        if (player.hasPermission("dmcm.italic")) {
+            codesString += "o";
+        }
+        if (player.hasPermission("dmcm.reset")) {
+            codesString += "r";
+        }
+
         if (config.getBoolean("allowEssentialsColors")) {
-            char[] codes = "0123456789abcdekmnolr".toCharArray();
+            char[] codes = codesString.toCharArray();
             for (char code : codes) {
                 text = text.replaceAll("&" + code, "§" + code);
             }
@@ -32,8 +53,8 @@ public class Formatter {
         return text;
     }
 
-    public static TextComponent formatNoSpoiler(String text) {
-        text = color(text);
+    public static TextComponent formatNoSpoiler(Player player, String text) {
+        text = color(player, text);
 
         for (FormatElement formatElement : formattingElements) {
             final Pattern pattern = Pattern.compile(formatElement.regex, Pattern.MULTILINE);
@@ -48,12 +69,12 @@ public class Formatter {
         return retText;
     }
 
-    public static TextComponent format(String text) {
+    public static TextComponent format(Player player, String text) {
         if (!config.getBoolean("allowSpoilers")) {
-            return formatNoSpoiler(text);
+            return formatNoSpoiler(player, text);
         }
 
-        text = color(text);
+        text = color(player, text);
         TextComponent retText = new TextComponent();
 
         // Spoilers
@@ -65,16 +86,16 @@ public class Formatter {
             String showText = textPiece;
             boolean spoil = spoiler && !(count % 2 == 0) && (count + 1 != splitText.length); //  && splitText.length != 1)
             if (spoil) {
-                String clearedText = color(textPiece).replaceAll("§(.)", "");
+                String clearedText = color(player, textPiece).replaceAll("§(.)", "");
                 showText = clearedText.replaceAll("(.)", ChatColor.DARK_GRAY + "▋");
                 showText += ChatColor.RESET;
             } else if (spoiler) {
                 showText = "||" + showText;
             }
 
-            TextComponent addComponent = formatNoSpoiler(showText);
+            TextComponent addComponent = formatNoSpoiler(player, showText);
             if (spoil) {
-                addComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + "Spoilered text: " + ChatColor.RESET + color(textPiece))));
+                addComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + "Spoilered text: " + ChatColor.RESET + color(player, text))));
             }
 
             retText.addExtra(addComponent);
